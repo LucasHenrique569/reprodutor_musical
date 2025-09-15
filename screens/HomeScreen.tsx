@@ -6,11 +6,12 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
-import { inserir, remover } from "../config/database";
+import { inserir, remover, limparBanco } from "../config/database";
 
 export default function Home({ navigation }) {
     
@@ -47,16 +48,14 @@ export default function Home({ navigation }) {
           contentContainerStyle={styles.listContainer}
           renderItem={({ item }) => (
             <View style={styles.listItem}>
-              <TouchableOpacity
-                style={styles.musicInfo}
-                onPress={async () => await inserir(item.nome, item.uri)}
-              >
+              <TouchableOpacity style={styles.musicInfo}>
                 <Text style={styles.musicText}>{item.nome}</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.removeButton}
-                onPress={() => {
-                  remover(item.id);
+                onPress={async () => {
+                  await remover(item.id);
                   setMusicas(musicas.filter((musica) => musica.id !== item.id));
                 }}
               >
@@ -68,6 +67,25 @@ export default function Home({ navigation }) {
       </View>
 
       <View style={styles.bottomArea}>
+        <TouchableOpacity
+          style={styles.confirmSelectedMusicsButton}
+          onPress={async () => {
+            try{
+              await limparBanco()
+              
+              for (const item of musicas){
+                await inserir(item.nome, item.uri)
+              }
+  
+              Alert.alert('Músicas adicionadas com sucesso !!! ')
+            } catch(erro){
+              console.error('Erro ao tentar cadastrar novas músicas: ', erro)
+            }
+          }}
+        >
+          <Text style={styles.addButtonText}>Confirmar músicas selecionadas</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => navigation.navigate("PlayList")}
           style={styles.checkButton}
@@ -94,7 +112,10 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     backgroundColor: "#FFF",
     alignItems: "center",
-    marginBottom: 40
+    marginBottom: 40,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   addButton: {
     backgroundColor: "#4CAF50",
@@ -152,4 +173,9 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
   },
+  confirmSelectedMusicsButton: {
+    backgroundColor: "#4CAF50",
+    padding: 20,
+    borderRadius: 8
+  }
 });
