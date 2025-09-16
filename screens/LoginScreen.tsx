@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
-import { Alert, SafeAreaView, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Alert, SafeAreaView, TouchableOpacity, Text, StyleSheet, View } from "react-native";
 
 export default function LoginScreen({navigation}: any) {
 
@@ -46,15 +46,16 @@ export default function LoginScreen({navigation}: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#B0B0B0",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    display: "flex"
+    // padding: 20,
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#333",
+    color: "#FFF",
     marginBottom: 30,
   },
   fingerprintButton: {
@@ -69,6 +70,20 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
-    color: "#666",
+    color: "#FFF",
+    fontWeight: "bold"
   },
+  headerArea: {
+    height: "10%",
+    backgroundColor: "#505050",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+  },
+  headerTextArea: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FFF"
+  }
 });

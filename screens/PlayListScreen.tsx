@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { carregarDados } from "../config/database";
 import { Audio } from "expo-av";
-import { useStateForPath } from "@react-navigation/native";
 
 import { FontAwesome as Icon } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -33,7 +32,7 @@ export default function PlayListScreen() {
 
   useEffect(() => {
     return () => {
-      if (som) som.unloadAsync();
+      if (som) som.unloadAsync()
     };
   }, [som]);
 
@@ -51,6 +50,7 @@ export default function PlayListScreen() {
         const { sound } = await Audio.Sound.createAsync({ uri });
         setSom(sound);
         setTocando(true);
+
         await sound.playAsync();
       }
     } catch (error) {
@@ -122,74 +122,80 @@ export default function PlayListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.headerArea}>
+        <Text style={styles.headerTextArea}>Músicas</Text>
+      </View>
 
-      <FlatList
-        data={lista}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <TouchableOpacity
+      <View style={styles.mainContainer}>
+        <FlatList
+          data={lista}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+          renderItem={({ item }) => (
+            <View style={styles.listItem}>
+              <TouchableOpacity
 
-              onPress={async() => {
-                try {
-                  if (som) {
-                    await som.unloadAsync();
-                    setSom(null);
-                    setTocando(false);
+                onPress={async () => {
+                  try {
+                    if (som) {
+                      await som.unloadAsync();
+                      setSom(null);
+                      setTocando(false);
+                    }
+
+                    const { sound } = await Audio.Sound.createAsync({ uri: lista[item.id - 1].uri });
+                    setSom(sound);
+                    await sound.playAsync();
+                    setTocando(true)
+
+                  } catch (error) {
+                    console.error("Erro ao tocar música:", error);
                   }
-                  const { sound } = await Audio.Sound.createAsync({ uri: lista[item.id-1].uri });
-                  setSom(sound);
-                  await sound.playAsync();
-                  setTocando(true)
 
-                } catch (error) {
-                  console.error("Erro ao tocar música:", error);
+                  setIncremento(item.id - 1)
+                }}
+              >
+
+                {incremento === item.id - 1
+                  ?
+                  <Text style={{ color: "rgba(247, 131, 43, 1)", fontWeight: "bold", textDecorationLine: "underline" }} >{item.nome}</Text>
+                  :
+                  <Text style={{ color: "#000", fontWeight: "500" }}>{item.nome}</Text>
+
                 }
-                
-                setIncremento(item.id - 1)
-              }}
-            >
 
-              {incremento === item.id - 1
-                ?
-                <Text style={{color: "rgba(247, 131, 43, 1)", fontWeight: "bold", textDecorationLine: "underline"}} >{item.nome}</Text>
-                :
-                <Text style={{color: "#000", fontWeight: "500"}}>{item.nome}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
-              }
-
-            </TouchableOpacity>
-          </View>
-        )}
-
-      />
+        />
+      </View>
 
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity 
-          style={styles.buttonPlay} 
+        <TouchableOpacity
+          style={styles.buttonPlay}
           onPress={async () => {
-                let randomMusic = generateRandomNumber(0, lista.length)
+            let randomMusicIndex = generateRandomNumber(0, lista.length)
 
-                try {
-                  if (som) {
-                    await som.unloadAsync();
-                    setSom(null);
-                    setTocando(false);
-                  }
+            try {
+              if (som) {
+                await som.unloadAsync();
+                setSom(null);
+                setTocando(false);
+              }
 
-                  const { sound } = await Audio.Sound.createAsync({ uri: lista[randomMusic].uri });
-                  setSom(sound);
-                  await sound.playAsync();
-                  setTocando(true)
+              const { sound } = await Audio.Sound.createAsync({ uri: lista[randomMusicIndex].uri });
+              setSom(sound);
+              await sound.playAsync();
+              setTocando(true)
 
-                  setIncremento(randomMusic)
-                } catch (error) {
-                  console.error("Erro ao tocar música:", error);
-                }
-                
-              }}
+              setIncremento(randomMusicIndex)
+            } catch (error) {
+              console.error("Erro ao tocar música:", error);
+            }
+
+          }}
         >
           <Icon name="random" size={20} color="#000" />
         </TouchableOpacity>
@@ -212,7 +218,7 @@ export default function PlayListScreen() {
             </View>
           }
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.buttonNext} onPress={proxima}>
           <Feather name="skip-forward" size={20} color="#000" />
         </TouchableOpacity>
@@ -228,8 +234,8 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 100,
     gap: 10,
+    height: "100%"
   },
   buttonPrev: {
     padding: 20,
@@ -256,11 +262,17 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row"
-
   },
   listContainer: {
     paddingBottom: 20,
-    marginTop: '5%',
+    marginTop: "5%",
+
+  },
+  mainContainer: {
+    borderWidth: 10,
+    borderRadius: 10,
+    borderColor: "#505050",
+    height: "73%"
   },
   listItem: {
     flexDirection: "row",
@@ -279,12 +291,27 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 10,
-    width: '70%',
+    width: '100%',
     gap: 10,
+    backgroundColor: "#505050",
+    marginBottom: 40,
   },
   playRandomMusicButton: {
     backgroundColor: "#ccc",
     padding: 20,
     borderRadius: 10
+  },
+  headerArea: {
+    height: "10%",
+    width: "100%",
+    backgroundColor: "#505050",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  headerTextArea: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FFF"
   }
 });

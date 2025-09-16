@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
 import { inserir, remover, limparBanco } from "../config/database";
 
@@ -37,10 +36,12 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.headerArea}>
+        <Text style={styles.headerTextArea}>Selecione as músicas de sua playlist</Text>
+      </View>
+
       <View style={styles.topArea}>
-        <TouchableOpacity onPress={escolherMusica} style={styles.addButton}>
-          <Text style={styles.addButtonText}>Escolher música</Text>
-        </TouchableOpacity>
+        <Text style={styles.selectedMusicsText}>Músicas selecionadas</Text>
 
         <FlatList
           data={musicas}
@@ -64,6 +65,10 @@ export default function Home({ navigation }) {
             </View>
           )}
         />
+        
+        <TouchableOpacity onPress={escolherMusica} style={styles.addButton}>
+          <Text style={styles.addButtonText}>Escolher músicas</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.bottomArea}>
@@ -90,7 +95,7 @@ export default function Home({ navigation }) {
           onPress={() => navigation.navigate("PlayList")}
           style={styles.checkButton}
         >
-          <Icon name="check" size={28} color="#FFF" />
+          <Text style={styles.addButtonText}>Tocar playlist</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -101,48 +106,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
+    height: "100%"
   },
   topArea: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#B0B0B0"
   },
   bottomArea: {
     padding: 20,
     borderTopWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#FFF",
+    backgroundColor: "#505050",
     alignItems: "center",
     marginBottom: 40,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    height: "15%"
   },
   addButton: {
     backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    marginBottom: 15,
+    marginTop: 15,
     alignItems: "center",
   },
   addButtonText: {
     color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center"
   },
   checkButton: {
     backgroundColor: "#2196F3",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 8,
+    width: "48%",
+    height: "80%",
     elevation: 6,
     shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   listContainer: {
     paddingBottom: 20,
+    borderWidth: 10,
+    borderRadius: 10,
+    borderColor: "#505050"
   },
   listItem: {
     flexDirection: "row",
@@ -175,7 +187,30 @@ const styles = StyleSheet.create({
   },
   confirmSelectedMusicsButton: {
     backgroundColor: "#4CAF50",
-    padding: 20,
-    borderRadius: 8
+    borderRadius: 8,
+    width: "48%",
+    height: "80%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  headerArea: {
+    height: "10%",
+    backgroundColor: "#505050",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  headerTextArea: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#FFF"
+  },
+  selectedMusicsText: {
+    textAlign: "center", 
+    color: "#FFF", 
+    fontWeight: "bold", 
+    fontSize: 20, 
+    marginBottom: 10
   }
-});
+})
